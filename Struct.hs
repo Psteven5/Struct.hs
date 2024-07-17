@@ -41,7 +41,7 @@ import GHC.Records hiding (HasField, setField)
 import Language.Haskell.TH
 import Prelude
 
--- We want do define our own HasField, as we don't want to include setField, only getField
+-- We want to define our own HasField, as we don't want to include setField, only getField
 class HasField x r a | x r -> a where
   hasField :: r -> (a -> r, a)
 setField :: forall x r a . HasField x r a => r -> a -> r
@@ -57,9 +57,16 @@ struct structType = do
       field :: [VarBangType] -> Name -> VarBangType -> Q [Dec]
       field fields structType (fieldName, _, fieldType) = pure [decl]
         where
+          -- structType' is necessary to get rid of qualifications in the name
+          -- Otherwise the compiler will not allow it to be used like a constructor
           structType' = mkName $ nameBase structType
+          fieldName'  = nameBase fieldName
+          
           r = mkName "r"
           f = mkName "f"
+          
+          -- The same mkName $ nameBase qualification dropping is applied here
+          -- Aside from that, this just handles setting and getting
           fieldP = map (\(n, _, _) -> let newN = mkName $ nameBase n in (newN, VarP newN)) fields
           fieldE = map (\(n, _, _) -> let newN = mkName $ nameBase n in if fieldName /= n then (newN, VarE newN) else (newN, VarE f)) fields
 
@@ -70,6 +77,6 @@ struct structType = do
           -- >   hasField r = (\f -> case r of RecordType { .. } -> RecordType { field = f, .. }, r.field)
           --
           -- This way we inherit getField, but define our own setField
-          decl = InstanceD Nothing [] (AppT (AppT (AppT (ConT $ mkName "HasField") (LitT $ StrTyLit $ nameBase fieldName)) $ ConT structType') fieldType)
+          decl = InstanceD Nothing [] (AppT (AppT (AppT (ConT $ mkName "HasField") (LitT $ StrTyLit fieldName')) $ ConT structType') fieldType)
             [FunD (mkName "hasField") [Clause [VarP r] (NormalB (TupE [Just (LamE [VarP f] (CaseE (VarE r) [Match (RecP structType' fieldP)
-            (NormalB (RecConE structType' fieldE)) []])),Just (AppE (AppTypeE (VarE 'GHC.Records.getField) (LitT $ StrTyLit $ nameBase fieldName)) $ VarE r)])) []]]
+            (NormalB (RecConE structType' fieldE)) []])),Just (AppE (AppTypeE (VarE 'GHC.Records.getField) (LitT $ StrTyLit fieldName')) $ VarE r)])) []]]
