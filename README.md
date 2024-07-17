@@ -1,5 +1,5 @@
 # Struct.hs
-C-struct like usage of records in Haskell, enabling shared fieldnames, dot access notation, and dot access updating
+C-struct like usage of records in Haskell, enabling shared fieldnames, dot access notation, and dot access updating.
 
 Struct.hs defines a single Template Haskell function to be used: struct :: Name -> Q [Dec]
 
