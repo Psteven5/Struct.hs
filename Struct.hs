@@ -61,7 +61,7 @@ struct structType = do
           r = mkName "r"
           f = mkName "f"
           fieldP = map (\(n, _, _) -> let newN = mkName $ nameBase n in (newN, VarP newN)) fields
-          fieldE = map (\(n, _, _) -> let newN = mkName $ nameBase n in if fieldName /= n then (newN, VarE newN) else (newN, VarE newN)) fields
+          fieldE = map (\(n, _, _) -> let newN = mkName $ nameBase n in if fieldName /= n then (newN, VarE newN) else (newN, VarE f)) fields
 
           -- If you are confused by this. Try runQ [e|34+35|] in GHCI
           -- The point is that this generates the following instance template for all fields:
