@@ -29,7 +29,7 @@
 
 {-# LANGUAGE AllowAmbiguousTypes, FunctionalDependencies, TemplateHaskell #-}
 
--- Struct.hs used getField from GHC.Records, but defines its own HasField (and thus setField)
+-- Struct.hs uses getField from GHC.Records, but defines its own HasField (and also setField)
 -- DuplicateRecordFields is going to be enabled, so we need to import Prelude
 module Struct
   ( module Struct
@@ -52,22 +52,25 @@ struct :: Name -> Q [Dec]
 struct structType = do
   TyConI (DataD _ _ _ _ [RecC _ fields] _) <- reify structType
   concat <$> mapM (field fields structType) fields
-  where
-    -- Helper function that generates an instance of hasField for a given field of the Record
-    field :: [VarBangType] -> Name -> VarBangType -> Q [Dec]
-    field fields structType (fieldName, _, fieldType) = pure [decl]
-      where
-        structType' = mkName $ nameBase structType
-        r = mkName "r"
-        f = mkName "f"
-        fieldP = map (\(n, _, _) -> (mkName $ nameBase n, VarP $ mkName $ nameBase n)) fields
-        fieldE = map (\(n, _, _) -> if fieldName /= n then (mkName $ nameBase n, VarE $ mkName $ nameBase n) else (mkName $ nameBase n, VarE f)) fields
+    where
+      -- Helper function that generates an instance of hasField for a given field of the Record
+      field :: [VarBangType] -> Name -> VarBangType -> Q [Dec]
+      field fields structType (fieldName, _, fieldType) = pure [decl]
+        where
+          structType' = mkName $ nameBase structType
+          r = mkName "r"
+          f = mkName "f"
+          fieldP = map (\(n, _, _) -> let newN = mkName $ nameBase n in (newN, VarP newN)) fields
+          fieldE = map (\(n, _, _) -> let newN = mkName $ nameBase n in if fieldName /= n then (newN, VarE newN) else (newN, VarE newN)) fields
 
-        -- If you are confused by this. Try runQ [e|34+35|] in GHCI
-        -- The point is that this generates the following instance template for all fields:
-        --
-        -- > instance HasField "field" RecordType FieldType where
-        -- >   hasField r = (\f -> case r of RecordType { .. } -> RecordType { field = f, .. }, r.field)
-        --
-        -- This way we inherit getField, but define our own setField
-        decl = InstanceD Nothing [] (AppT (AppT (AppT (ConT $ mkName "HasField") (LitT (StrTyLit (nameBase fieldName)))) (ConT structType')) fieldType) [FunD (mkName "hasField") [Clause [VarP r] (NormalB (TupE [Just (LamE [VarP f] (CaseE (VarE r) [Match (RecP structType' fieldP) (NormalB (RecConE structType' fieldE)) []])),Just (AppE (AppTypeE (VarE 'GHC.Records.getField) (LitT (StrTyLit (nameBase fieldName)))) (VarE r))])) []]]
+          -- If you are confused by this. Try runQ [e|34+35|] in GHCI
+          -- The point is that this generates the following instance template for all fields:
+          --
+          -- > instance HasField "field" RecordType FieldType where
+          -- >   hasField r = (\f -> case r of RecordType { .. } -> RecordType { field = f, .. }, r.field)
+          --
+          -- This way we inherit getField, but define our own setField
+          decl = InstanceD Nothing []
+            (AppT (AppT (AppT (ConT $ mkName "HasField") (LitT (StrTyLit (nameBase fieldName)))) (ConT structType')) fieldType)
+            [FunD (mkName "hasField") [Clause [VarP r] (NormalB (TupE [Just (LamE [VarP f] (CaseE (VarE r) [Match (RecP structType' fieldP)
+            (NormalB (RecConE structType' fieldE)) []])),Just (AppE (AppTypeE (VarE 'GHC.Records.getField) (LitT (StrTyLit (nameBase fieldName)))) (VarE r))])) []]]
