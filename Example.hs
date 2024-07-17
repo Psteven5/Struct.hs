@@ -1,10 +1,10 @@
+-- These language extensions are required in a module using Struct.hs
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedRecordUpdate #-}
 {-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE TemplateHaskell #-}
--- ^ These language extensions are required in a module using Struct.hs
 
 module Example (main) where
 
