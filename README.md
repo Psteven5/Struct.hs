@@ -1,6 +1,8 @@
 # Struct.hs
 C-struct like usage of records in Haskell, enabling shared fieldnames, dot access notation, and dot access updating.
 
+While writing an Error class and inherited Error classes for my compiler, I came upon the dreaded Haskell namespace issue it has with fields, and ended up wishing it was kind of more like C in a few aspects...
+
 Struct.hs defines a single Template Haskell function to be used: struct :: Name -> Q [Dec]
 
 Calling "$(struct ''RecordType)" after defining a Record generates the necessary instances for its fields to enable using it as a Struct.
