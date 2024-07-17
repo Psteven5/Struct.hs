@@ -19,5 +19,9 @@ main = do
   let p' = p { y = 2 }
   let l  = Line2D { start = p', end = p }
   let l' = l { start.x = 1 }
-  print (l.start.x, l.start.y, l.end.x, l.end.y)
+  print (l'.start.x, l'.start.y, l'.end.x, l'.end.y)
+```
+```
+(1.0,2.0,3.0,4.0)
+(1.0,2.0,3.0,4.0)
 ```
