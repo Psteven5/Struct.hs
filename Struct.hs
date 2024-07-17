@@ -71,6 +71,6 @@ struct structType = do
           --
           -- This way we inherit getField, but define our own setField
           decl = InstanceD Nothing []
-            (AppT (AppT (AppT (ConT $ mkName "HasField") (LitT (StrTyLit (nameBase fieldName)))) (ConT structType')) fieldType)
+            (AppT (AppT (AppT (ConT $ mkName "HasField") (LitT $ StrTyLit $ nameBase fieldName)) $ ConT structType') fieldType)
             [FunD (mkName "hasField") [Clause [VarP r] (NormalB (TupE [Just (LamE [VarP f] (CaseE (VarE r) [Match (RecP structType' fieldP)
-            (NormalB (RecConE structType' fieldE)) []])),Just (AppE (AppTypeE (VarE 'GHC.Records.getField) (LitT (StrTyLit (nameBase fieldName)))) (VarE r))])) []]]
+            (NormalB (RecConE structType' fieldE)) []])),Just (AppE (AppTypeE (VarE 'GHC.Records.getField) (LitT $ StrTyLit $ nameBase fieldName)) $ VarE r)])) []]]
