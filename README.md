@@ -2,6 +2,7 @@
 C-struct like usage of records in Haskell, enabling shared fieldnames, dot access notation, and dot access updating
 
 Struct.hs defines a single Template Haskell function to be used: struct :: Name -> Q [Dec]
+
 Calling "$(struct ''RecordType)" after defining a Record generates the necessary instances for its fields to enable using it as a Struct.
 
 ```haskell
