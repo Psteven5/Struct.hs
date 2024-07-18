@@ -76,6 +76,8 @@ struct structType = do
           -- > instance HasField "field" RecordType FieldType where
           -- >   hasField r = (\f -> case r of RecordType { .. } -> RecordType { field = f, .. }, r.field)
           --
+          -- The main trick is that we use r.field for the getter, which is already defined for us
+          -- If we used field r instead like some example code did, the compiler will be confused all the time, so we need the predefined getField
           -- This way we inherit getField, but define our own setField
           decl = InstanceD Nothing [] (AppT (AppT (AppT (ConT $ mkName "HasField") (LitT $ StrTyLit fieldName')) $ ConT structType') fieldType)
             [FunD (mkName "hasField") [Clause [VarP r] (NormalB (TupE [Just (LamE [VarP f] (CaseE (VarE r) [Match (RecP structType' fieldP)
