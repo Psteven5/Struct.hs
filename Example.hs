@@ -1,4 +1,10 @@
 -- These language extensions are required in a module using Struct.hs
+--  * DataKinds for referring to the fields as their string representation
+--  * DuplicateRecordFields IFF you want to allow.. duplicate record fields
+--  * OverloadedRecordDot for accessing the fields with . -> kind of falls apart without it
+--  * OverloadedRecordUpdate for being able to update records
+--  * RebindableSyntax because OverloadedRecordUpdate and idk GHC told me to
+--  * TemplateHaskell for being able to execute the compile time generation of instances
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedRecordDot #-}
