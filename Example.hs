@@ -5,7 +5,7 @@
 --  * OverloadedRecordUpdate for being able to update records
 --  * RebindableSyntax because OverloadedRecordUpdate and idk GHC told me to
 --  * TemplateHaskell for being able to execute the compile time generation of instances
---  * RECOMMENDED: NoFieldSelectors: gets rid of the old way of accessing (field record), which kind of doesn't work anyway when fields have duplicate names
+--  * RECOMMENDED: NoFieldSelectors: gets rid of the old way of accessing (field record), which kind of doesn't work anyway when fields have duplicate names (and it would allow for functions with the same names as the fields)
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedRecordDot #-}
