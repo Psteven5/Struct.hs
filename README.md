@@ -5,17 +5,17 @@ While writing an Error class and inherited Error classes for my compiler, I came
 
 Struct.hs defines a single Template Haskell function to be used: struct :: Name -> Q [Dec]
 
-Calling "$(struct ''RecordType)" after defining a Record generates the necessary instances for its fields to enable using it as a Struct.
+Calling "struct ''RecordType" after defining a Record generates the necessary instances for its fields to enable using it as a Struct.
 
 ```haskell
 data Vec2 = Vec2 { x :: Double, y :: Double }
-$(struct ''Vec2)
+struct ''Vec2
 
 data Point2D = Point2D { x :: Double, y :: Double }
-$(struct ''Point2D)
+struct ''Point2D
 
 data Line2D = Line2D { start :: Point2D, end :: Point2D }
-$(struct ''Line2D)
+struct ''Line2D
 
 main = do
   let v = Vec2    { x = 1, y = 2 }
