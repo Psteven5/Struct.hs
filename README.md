@@ -1,7 +1,7 @@
 # Struct.hs
 C-struct like usage of records in Haskell, enabling shared fieldnames, dot access notation, and dot access updating.
 
-While writing an Error class and inherited Error classes for my compiler, I came upon the dreaded Haskell namespace issue it has with fields, and ended up wishing it was kind of more like C in a few aspects. I then started using DuplicateRecordFields and a whole new series of problems started to emerge which led to this.
+While writing an Error class and inherited Error classes for my compiler, I came upon the dreaded Haskell namespace issue it has with fields, and ended up wishing it was kind of more like C in a few aspects. I then started using DuplicateRecordFields and a whole new series of problems (for example, not being able to access fields because it was ambiguous to the compiler, leading to the need to put type annotation everywhere) started to emerge which led to this.
 
 Disclaimer: This (for now) does not make the memory representation the same as a C-struct: that wasn't the goal.
 
