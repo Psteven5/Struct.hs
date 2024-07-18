@@ -17,20 +17,20 @@ data Vec2 = Vec2
   } deriving Show
 
 -- ... Then declare your struct!
-$(struct ''Vec2)
+struct ''Vec2
 
 data Vec3 = Vec3
   { x :: Double
   , y :: Double
   , z :: Double
   } deriving Show
-$(struct ''Vec3)
+struct ''Vec3
 
 data Mat2x2 = Mat2x2
   { x :: Vec2
   , y :: Vec2
   } deriving Show
-$(struct ''Mat2x2)
+struct ''Mat2x2
 
 -- Doing so will enable:
 --  * Unambiguous field names (Haskell won't be confused about Vec2.x vs Vec3.x)
